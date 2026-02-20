@@ -15,26 +15,21 @@
         .tab-active { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.5); }
         .hidden-section { display: none; }
         #stop-athan-btn { position: fixed; bottom: 2rem; left: 2rem; z-index: 1000; display: none; }
-        
-        /* تنبيه مخصص */
         #custom-alert { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 300; display: none; }
     </style>
 </head>
 <body class="overflow-x-hidden pb-12">
 
-    <!-- رسالة تنبيه مخصصة -->
     <div id="custom-alert" class="bg-red-500 text-white px-6 py-3 rounded-full shadow-2xl font-bold flex items-center gap-2">
         <i data-lucide="alert-circle"></i>
         <span id="alert-msg">ملف الأذان adhan.mp3 غير موجود!</span>
     </div>
 
-    <!-- ملف صوت الأذان المحلي -->
     <audio id="athan-audio" preload="auto">
         <source src="adhan.mp3" type="audio/mpeg">
         متصفحك لا يدعم تشغيل الصوت.
     </audio>
 
-    <!-- واجهة تفعيل الصوت -->
     <div id="audio-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-2xl">
         <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 shadow-2xl max-w-sm mx-4">
             <div class="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -48,7 +43,6 @@
         </div>
     </div>
 
-    <!-- زر إيقاف الأذان -->
     <button id="stop-athan-btn" onclick="stopAthan()" class="flex items-center gap-3 px-8 py-5 bg-red-600 text-white rounded-full shadow-2xl animate-pulse hover:bg-red-700 transition-colors">
         <i data-lucide="volume-x" class="w-6 h-6"></i>
         <span class="font-bold">إيقاف صوت الأذان</span>
@@ -66,7 +60,12 @@
             </div>
             <div>
                 <h1 class="text-xl font-black bg-gradient-to-l from-amber-200 to-amber-500 bg-clip-text text-transparent">فانوس رمضان</h1>
-                <p id="system-status" class="text-[10px] text-green-500 uppercase font-bold tracking-widest">النظام جاهز</p>
+                <div class="flex items-center gap-2">
+                    <p id="system-status" class="text-[10px] text-green-500 uppercase font-bold tracking-widest">النظام جاهز</p>
+                    <button onclick="testAthanManual()" class="text-[10px] bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20 hover:bg-amber-500/20 transition-colors font-bold">
+                        تجربة الصوت 🔊
+                    </button>
+                </div>
             </div>
         </div>
         <div class="text-right">
@@ -76,8 +75,6 @@
     </header>
 
     <main class="relative z-10 max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-        
-        <!-- Countdown Section -->
         <section class="relative overflow-hidden rounded-[2.5rem] bg-[#0A1224] border border-white/5 shadow-2xl p-8 md:p-12">
             <div class="flex flex-col md:flex-row items-center justify-between gap-12">
                 <div class="text-center md:text-right space-y-6">
@@ -113,13 +110,11 @@
             </div>
         </section>
 
-        <!-- Tabs -->
         <div class="flex justify-center p-1 bg-white/5 rounded-2xl max-w-sm mx-auto border border-white/10">
             <button onclick="switchTab('imsakia')" id="btn-imsakia" class="flex-1 py-3 px-4 rounded-xl transition-all tab-active font-bold">الإمساكية</button>
             <button onclick="switchTab('prayers')" id="btn-prayers" class="flex-1 py-3 px-4 rounded-xl transition-all text-white/40 font-bold">الأدعية</button>
         </div>
 
-        <!-- Imsakia Table -->
         <div id="container-imsakia" class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-xl">
             <div class="overflow-x-auto">
                 <table class="w-full text-right">
@@ -136,8 +131,7 @@
             </div>
         </div>
 
-        <!-- قسم الأدعية -->
-        <div id="container-prayers" class="content-section grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div id="container-prayers" class="hidden-section grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
                 <h4 class="text-amber-500 font-bold mb-4">عند الإفطار</h4>
                 <p class="text-xl leading-relaxed">"ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله"</p>
@@ -159,7 +153,6 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // داتا الإمساكية (كما هي)
         const imsakiaData = [
             { day: 1, date: '19 شباط', mDate: '2026-02-19', fajr: '05:19', maghrib: '18:07' },
             { day: 2, date: '20 شباط', mDate: '2026-02-20', fajr: '05:18', maghrib: '18:07' },
@@ -203,23 +196,34 @@
             setTimeout(() => alertBox.style.display = 'none', 5000);
         }
 
-        // تفعيل الصوت واختباره فوراً
         async function enableAudioAndTest() {
             const audio = document.getElementById('athan-audio');
             try {
-                // محاولة تشغيل الصوت (تفاعل حقيقي مطلوب من المتصفح)
                 await audio.play();
-                // إذا نجح، نوقفه فوراً (هذا يكسر قيد المتصفح)
                 audio.pause();
                 audio.currentTime = 0;
-                
-                // إخفاء الواجهة
                 document.getElementById('audio-overlay').style.display = 'none';
                 document.getElementById('system-status').innerText = 'الأذان التلقائي مفعل ✅';
                 document.getElementById('system-status').classList.replace('text-green-500', 'text-amber-500');
             } catch (err) {
                 console.error("Audio Test Failed:", err);
                 showAlert("خطأ في تشغيل الصوت. تأكد من وجود ملف adhan.mp3");
+            }
+        }
+
+        // وظيفة تجربة الأذان يدوياً
+        function testAthanManual() {
+            const audio = document.getElementById('athan-audio');
+            if (isAthanPlaying) {
+                stopAthan();
+            } else {
+                audio.play().then(() => {
+                    isAthanPlaying = true;
+                    document.getElementById('stop-athan-btn').style.display = 'flex';
+                    document.getElementById('system-status').innerText = 'يتم تجربة الصوت...';
+                }).catch(err => {
+                    showAlert("فشل تشغيل ملف adhan.mp3!");
+                });
             }
         }
 
@@ -240,6 +244,7 @@
             audio.currentTime = 0;
             isAthanPlaying = false;
             document.getElementById('stop-athan-btn').style.display = 'none';
+            document.getElementById('system-status').innerText = 'الأذان التلقائي مفعل ✅';
         }
 
         function switchTab(tab) {
