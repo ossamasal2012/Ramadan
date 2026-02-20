@@ -97,6 +97,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
         // البيانات المستخرجة من ملف PDF المرفق 
+// البيانات
         const imsakiaData = [
             { day: 1, date: '19 شباط', mDate: '2026-02-19', imsak: '5:09', fajr: '5:19', sunrise: '6:42', dhuhr: '12:17', maghrib: '6:07', midnight: '11:35' },
             { day: 2, date: '20 شباط', mDate: '2026-02-20', imsak: '5:08', fajr: '5:18', sunrise: '6:41', dhuhr: '12:16', maghrib: '6:07', midnight: '11:35' },
@@ -129,34 +130,6 @@
             { day: 29, date: '19 آذار', mDate: '2026-03-19', imsak: '4:35', fajr: '4:45', sunrise: '6:08', dhuhr: '12:10', maghrib: '6:28', midnight: '11:29' },
             { day: 30, date: '20 آذار', mDate: '2026-03-20', imsak: '4:34', fajr: '4:44', sunrise: '6:07', dhuhr: '12:10', maghrib: '6:29', midnight: '11:29' }
         ];
-        <div id="content-quran" class="hidden-section space-y-4">
-    <div class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 p-8 text-center">
-        <div class="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i data-lucide="music" class="text-amber-500 w-8 h-8"></i>
-        </div>
-        <h3 class="text-xl font-bold mb-6 text-amber-500">الختمة الكاملة</h3>
-        
-        <audio id="quran-player" src="https://github.com/ossamasal2012/q/releases/download/v1.0/q.webm"></audio>
-
-        <div class="flex items-center justify-center gap-6">
-            <button onclick="skipTime(-10)" class="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-all">
-                <i data-lucide="rotate-ccw" class="w-6 h-6 text-white/70"></i>
-            </button>
-
-            <button id="quran-play-btn" onclick="toggleQuran()" class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center text-[#050B18]">
-                <i id="quran-icon" data-lucide="play" class="w-8 h-8 fill-current"></i>
-            </button>
-
-            <button onclick="skipTime(10)" class="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-all">
-                <i data-lucide="rotate-cw" class="w-6 h-6 text-white/70"></i>
-            </button>
-        </div>
-        
-        <div class="mt-8 w-full bg-white/10 h-1.5 rounded-full">
-            <div id="quran-progress" class="bg-amber-500 h-full w-0 rounded-full transition-all"></div>
-        </div>
-    </div>
-</div>
 
         const azkar = ["اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ", "أستغفر الله", "سبحان الله و الحمد الله و الله أكبر", "سبحان الله وبحمده", "لا حول ولا قوة إلا بالله"];
         const audio = document.getElementById('athan-audio');
@@ -166,7 +139,12 @@
         function testAthan() { audio.play(); stopBtn.classList.remove('hidden'); }
 
         async function enableAudioAndStart() {
-            try { await audio.play(); audio.pause(); } catch(e) {}
+            try { 
+                await audio.play(); 
+                audio.pause(); 
+                audio.currentTime = 0; 
+            } catch(e) { console.log("Audio play failed", e); }
+            
             document.getElementById('audio-overlay').style.display = 'none';
             setInterval(updateCore, 1000);
         }
@@ -211,27 +189,31 @@
 
         function initApp() {
             const tbody = document.getElementById('imsakia-body');
-            tbody.innerHTML = imsakiaData.map(r => `
-                <tr class="border-b border-white/5">
-                    <td class="p-3 font-bold text-amber-500">${r.day}</td>
-                    <td class="p-3">${r.date}</td>
-                    <td class="p-3 font-mono opacity-50">${r.imsak}</td>
-                    <td class="p-3 font-mono">${r.fajr}</td>
-                    <td class="p-3 font-mono opacity-50">${r.sunrise}</td>
-                    <td class="p-3 font-mono">${r.dhuhr}</td>
-                    <td class="p-3 font-mono font-bold text-amber-400">${r.maghrib}</td>
-                    <td class="p-3 font-mono opacity-50">${r.midnight}</td>
-                </tr>
-            `).join('');
+            if(tbody) {
+                tbody.innerHTML = imsakiaData.map(r => `
+                    <tr class="border-b border-white/5">
+                        <td class="p-3 font-bold text-amber-500">${r.day}</td>
+                        <td class="p-3">${r.date}</td>
+                        <td class="p-3 font-mono opacity-50">${r.imsak}</td>
+                        <td class="p-3 font-mono">${r.fajr}</td>
+                        <td class="p-3 font-mono opacity-50">${r.sunrise}</td>
+                        <td class="p-3 font-mono">${r.dhuhr}</td>
+                        <td class="p-3 font-mono font-bold text-amber-400">${r.maghrib}</td>
+                        <td class="p-3 font-mono opacity-50">${r.midnight}</td>
+                    </tr>
+                `).join('');
+            }
 
             const sList = document.getElementById('subha-list');
-            sList.innerHTML = azkar.map((z, i) => {
-                const c = localStorage.getItem(`s_${i}`) || 0;
-                return `<div onclick="inc(${i})" class="tasbih-card bg-white/5 p-6 rounded-[2rem] flex justify-between items-center">
-                    <span class="font-bold text-sm">${z}</span>
-                    <span id="c_${i}" class="text-2xl font-black text-amber-500">${c}</span>
-                </div>`;
-            }).join('');
+            if(sList) {
+                sList.innerHTML = azkar.map((z, i) => {
+                    const c = localStorage.getItem(`s_${i}`) || 0;
+                    return `<div onclick="inc(${i})" class="tasbih-card bg-white/5 p-6 rounded-[2rem] flex justify-between items-center">
+                        <span class="font-bold text-sm">${z}</span>
+                        <span id="c_${i}" class="text-2xl font-black text-amber-500">${c}</span>
+                    </div>`;
+                }).join('');
+            }
             lucide.createIcons();
         }
 
@@ -244,48 +226,49 @@
 
         function resetTasbih() { if(confirm("تصفير العداد؟")) { azkar.forEach((_,i)=>localStorage.setItem(`s_${i}`,0)); initApp(); } }
 
- function switchTab(t) {
-    // أسماء كل الأقسام عندنا
-    const sections = ['imsakia', 'subha', 'quran'];
-    
-    sections.forEach(s => {
-        const content = document.getElementById(`content-${s}`);
-        const tab = document.getElementById(`tab-${s}`);
-        
-        if (s === t) {
-            content.classList.remove('hidden-section');
-            tab.className = 'flex-1 py-3 rounded-xl tab-active font-bold flex items-center justify-center gap-2';
-        } else {
-            content.classList.add('hidden-section');
-            tab.className = 'flex-1 py-3 rounded-xl text-white/40 font-bold flex items-center justify-center gap-2';
+        // دالة التبديل المحدثة والمضمونة
+        function switchTab(t) {
+            const tabs = ['imsakia', 'subha', 'quran'];
+            tabs.forEach(tabID => {
+                const content = document.getElementById(`content-${tabID}`);
+                const btn = document.getElementById(`tab-${tabID}`);
+                
+                if (content && btn) {
+                    if (tabID === t) {
+                        content.style.display = 'block';
+                        btn.className = 'flex-1 py-3 rounded-xl tab-active font-bold transition-all flex items-center justify-center gap-2';
+                    } else {
+                        content.style.display = 'none';
+                        btn.className = 'flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2';
+                    }
+                }
+            });
+            lucide.createIcons();
         }
-    });
-    lucide.createIcons(); // تحديث الأيقونات
-}
-        // التحكم في مشغل القرآن
-const qp = document.getElementById('quran-player');
 
-function toggleQuran() {
-    const icon = document.getElementById('quran-icon');
-    if (qp.paused) {
-        qp.play();
-        icon.setAttribute('data-lucide', 'pause');
-    } else {
-        qp.pause();
-        icon.setAttribute('data-lucide', 'play');
-    }
-    lucide.createIcons();
-}
+        // أوامر مشغل القرآن
+        const qp = document.getElementById('quran-player');
+        function toggleQuran() {
+            const icon = document.getElementById('quran-icon');
+            if (qp.paused) {
+                qp.play();
+                icon.setAttribute('data-lucide', 'pause');
+            } else {
+                qp.pause();
+                icon.setAttribute('data-lucide', 'play');
+            }
+            lucide.createIcons();
+        }
 
-function skipTime(s) {
-    qp.currentTime += s;
-}
+        function skipTime(s) { qp.currentTime += s; }
 
-// لتحديث شريط التحميل تلقائياً
-qp.ontimeupdate = () => {
-    const prog = (qp.currentTime / qp.duration) * 100;
-    document.getElementById('quran-progress').style.width = prog + '%';
-};
+        if(qp) {
+            qp.ontimeupdate = () => {
+                const prog = (qp.currentTime / qp.duration) * 100;
+                const progressBar = document.getElementById('quran-progress');
+                if(progressBar) progressBar.style.width = prog + '%';
+            };
+        }
 
         window.onload = initApp;
     </script>
