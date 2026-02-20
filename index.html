@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إمساكية رمضان 2026 والسبحة</title>
+    <title>إمساكية رمضان 2026 والسبحة والقرآن</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.css" rel="stylesheet">
     <style>
@@ -26,7 +26,7 @@
         <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 max-w-sm mx-4">
             <i data-lucide="moon-star" class="text-amber-500 w-16 h-16 mx-auto mb-6"></i>
             <h2 class="text-2xl font-bold mb-4 text-amber-500">رمضان 2026</h2>
-            <p class="text-white/70 mb-8 text-sm">اضغط للتفعيل لضمان عمل الأذان والعداد التنازلي والسبحة.</p>
+            <p class="text-white/70 mb-8 text-sm">اضغط للتفعيل لضمان عمل الأذان والعداد التنازلي والسبحة والقرآن.</p>
             <button onclick="enableAudioAndStart()" class="w-full py-4 bg-amber-500 text-[#050B18] font-black rounded-2xl text-lg hover:bg-amber-400">تفعيل ودخول</button>
         </div>
     </div>
@@ -54,19 +54,17 @@
             <div id="next-prayer-time" class="text-white/40 text-sm font-mono bg-white/5 inline-block px-4 py-1 rounded-full">موعد الصلاة: --:--</div>
         </section>
 
-<div class="flex p-1 bg-white/5 rounded-2xl border border-white/10">
-    <button onclick="switchTab('imsakia')" id="tab-imsakia" class="flex-1 py-3 rounded-xl tab-active font-bold transition-all flex items-center justify-center gap-2">
-        <i data-lucide="calendar-days" class="w-5 h-5"></i> الجدول
-    </button>
-    
-    <button onclick="switchTab('quran')" id="tab-quran" class="flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2">
-        <i data-lucide="book-open" class="w-5 h-5"></i> القرآن
-    </button>
-
-    <button onclick="switchTab('subha')" id="tab-subha" class="flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2">
-        <i data-lucide="fingerprint" class="w-5 h-5"></i> السبحة
-    </button>
-</div>
+        <div class="flex p-1 bg-white/5 rounded-2xl border border-white/10">
+            <button onclick="switchTab('imsakia')" id="tab-imsakia" class="flex-1 py-3 rounded-xl tab-active font-bold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="calendar-days" class="w-5 h-5"></i> الجدول
+            </button>
+            <button onclick="switchTab('quran')" id="tab-quran" class="flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="book-open" class="w-5 h-5"></i> القرآن
+            </button>
+            <button onclick="switchTab('subha')" id="tab-subha" class="flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2">
+                <i data-lucide="fingerprint" class="w-5 h-5"></i> السبحة
+            </button>
+        </div>
 
         <div id="content-imsakia" class="bg-[#0A1224] rounded-[2rem] border border-white/5 overflow-hidden">
             <div class="overflow-x-auto">
@@ -88,6 +86,33 @@
             </div>
         </div>
 
+        <div id="content-quran" class="hidden-section space-y-4">
+            <div class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 p-8 text-center shadow-2xl">
+                <div class="w-16 h-16 bg-amber-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="music" class="text-amber-500 w-8 h-8"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-6 text-amber-500">ختمة القرآن الكريم</h3>
+                
+                <audio id="quran-player" src="https://github.com/ossamasal2012/q/releases/download/v1.0/q.webm"></audio>
+
+                <div class="flex items-center justify-center gap-6">
+                    <button onclick="skipTime(-10)" class="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-all">
+                        <i data-lucide="rotate-ccw" class="w-6 h-6 text-white/70"></i>
+                    </button>
+                    <button id="quran-play-btn" onclick="toggleQuran()" class="w-16 h-16 bg-amber-500 rounded-full flex items-center justify-center text-[#050B18]">
+                        <i id="quran-icon" data-lucide="play" class="w-8 h-8 fill-current"></i>
+                    </button>
+                    <button onclick="skipTime(10)" class="p-3 bg-white/5 rounded-full hover:bg-white/10 transition-all">
+                        <i data-lucide="rotate-cw" class="w-6 h-6 text-white/70"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-8 w-full bg-white/10 h-1.5 rounded-full overflow-hidden">
+                    <div id="quran-progress" class="bg-amber-500 h-full w-0 rounded-full transition-all duration-300"></div>
+                </div>
+            </div>
+        </div>
+
         <div id="content-subha" class="hidden-section space-y-4">
             <div id="subha-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             <button onclick="resetTasbih()" class="w-full py-4 text-white/20 text-xs hover:text-red-400">تصفير العدادات</button>
@@ -96,8 +121,6 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // البيانات المستخرجة من ملف PDF المرفق 
-// البيانات
         const imsakiaData = [
             { day: 1, date: '19 شباط', mDate: '2026-02-19', imsak: '5:09', fajr: '5:19', sunrise: '6:42', dhuhr: '12:17', maghrib: '6:07', midnight: '11:35' },
             { day: 2, date: '20 شباط', mDate: '2026-02-20', imsak: '5:08', fajr: '5:18', sunrise: '6:41', dhuhr: '12:16', maghrib: '6:07', midnight: '11:35' },
@@ -143,10 +166,11 @@
                 await audio.play(); 
                 audio.pause(); 
                 audio.currentTime = 0; 
-            } catch(e) { console.log("Audio play failed", e); }
+            } catch(e) { console.log("Audio activation failed", e); }
             
             document.getElementById('audio-overlay').style.display = 'none';
             setInterval(updateCore, 1000);
+            switchTab('imsakia'); // التأكد من فتح الجدول عند الدخول
         }
 
         function parseTime(t, isPM) {
@@ -226,19 +250,17 @@
 
         function resetTasbih() { if(confirm("تصفير العداد؟")) { azkar.forEach((_,i)=>localStorage.setItem(`s_${i}`,0)); initApp(); } }
 
-        // دالة التبديل المحدثة والمضمونة
         function switchTab(t) {
             const tabs = ['imsakia', 'subha', 'quran'];
             tabs.forEach(tabID => {
                 const content = document.getElementById(`content-${tabID}`);
                 const btn = document.getElementById(`tab-${tabID}`);
-                
                 if (content && btn) {
                     if (tabID === t) {
-                        content.style.display = 'block';
+                        content.classList.remove('hidden-section');
                         btn.className = 'flex-1 py-3 rounded-xl tab-active font-bold transition-all flex items-center justify-center gap-2';
                     } else {
-                        content.style.display = 'none';
+                        content.classList.add('hidden-section');
                         btn.className = 'flex-1 py-3 rounded-xl text-white/40 font-bold transition-all flex items-center justify-center gap-2';
                     }
                 }
@@ -246,7 +268,6 @@
             lucide.createIcons();
         }
 
-        // أوامر مشغل القرآن
         const qp = document.getElementById('quran-player');
         function toggleQuran() {
             const icon = document.getElementById('quran-icon');
