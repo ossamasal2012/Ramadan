@@ -26,8 +26,8 @@
     </div>
 
     <!-- ملف صوت الأذان (رابط خارجي لضمان العمل) -->
-    <audio id="athan-audio" preload="auto">
-        <source src="https://www.islamcan.com/common/azan/azan1.mp3" type="audio/mpeg">
+       <audio id="athan-audio" preload="auto">
+        <source src="adhan.mp3" type="audio/mpeg">
     </audio>
 
     <!-- واجهة تفعيل الصوت -->
@@ -310,6 +310,20 @@
                     next = { name: 'الفجر', time: nextDay.fajr, date: pDate };
                 }
 
+                let next = null;
+                for (let p of prayerTimes) {
+                    const [h, m] = p.time.split(':').map(Number);
+                    const pDate = new Date(); pDate.setHours(h, m, 0);
+                    if (pDate > current) { next = { ...p, date: pDate }; break; }
+                }
+
+                if (!next) {
+                    const nextDay = imsakiaData.find(d => d.day === today.day + 1) || imsakiaData[0];
+                    const [h, m] = nextDay.fajr.split(':').map(Number);
+                    const pDate = new Date(); pDate.setDate(pDate.getDate() + 1); pDate.setHours(h, m, 0);
+                    next = { name: 'الفجر', time: nextDay.fajr, date: pDate };
+                }
+
                 const diff = next.date - current;
                 const hours = Math.floor(diff / 3600000);
                 const minutes = Math.floor((diff % 3600000) / 60000);
@@ -317,32 +331,27 @@
 
                 document.getElementById('prayer-name').innerText = next.name;
                 document.getElementById('prayer-time').innerText = next.time;
-                document.getElementById('countdown-timer').innerText = 
-                    `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                document.getElementById('countdown-timer').innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-                // منطق التنبيه قبل 5 دقائق
                 if (hours === 0 && minutes === 5 && seconds === 0 && !hasAlertedFiveMin) {
                     const banner = document.getElementById('notification-banner');
                     document.getElementById('notification-text').innerText = `تنبيه: بقي 5 دقائق على أذان ${next.name}`;
                     banner.classList.remove('hidden');
                     hasAlertedFiveMin = true;
-                    setTimeout(() => banner.classList.add('hidden'), 30000);
                 }
 
-                // منطق تشغيل الأذان
                 if (hours === 0 && minutes === 0 && seconds === 0) {
                     playAthan();
                     hasAlertedFiveMin = false;
                 }
 
-                // تحديث شريط التقدم للدقيقة الحالية
-                document.getElementById('progress-bar').style.width = `${(current.getSeconds() / 60) * 100}%`;
+                document.getElementById('progress-bar').style.width = `${(60 - current.getSeconds()) * 1.66}%`;
             }, 1000);
 
             lucide.createIcons();
         }
 
-        window.onload = initApp;
+        window.onload = init;
     </script>
 </body>
 </html>
