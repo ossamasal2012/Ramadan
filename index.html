@@ -3,117 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فانوس رمضان - الأذان التلقائي</title>
+    <title>فانوس رمضان - الإمساكية والأدعية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.css" rel="stylesheet">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700;900&display=swap');
         body { font-family: 'Cairo', sans-serif; background-color: #050B18; color: white; scroll-behavior: smooth; }
         .glass { background: rgba(10, 18, 36, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        @keyframes pulse-custom { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .animate-pulse-custom { animation: pulse-custom 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        header { z-index: 100; }
         .tab-active { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.5); }
-        
-        /* إعدادات الأقسام لضمان عدم التداخل */
-        .section-hidden { display: none !important; }
-        
-        #stop-athan-btn { position: fixed; bottom: 2rem; left: 2rem; z-index: 1000; display: none; }
-        #custom-alert { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 300; display: none; }
+        .hidden-section { display: none; }
     </style>
 </head>
 <body class="overflow-x-hidden pb-12">
 
-    <!-- تنبيه مخصص -->
-    <div id="custom-alert" class="bg-red-500 text-white px-6 py-3 rounded-full shadow-2xl font-bold flex items-center gap-2">
-        <i data-lucide="alert-circle"></i>
-        <span id="alert-msg">تنبيه</span>
+    <!-- Background Decor -->
+    <div class="fixed inset-0 pointer-events-none">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-amber-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-600/10 rounded-full blur-[120px]"></div>
     </div>
 
-    <!-- ملف صوت الأذان -->
-    <audio id="athan-audio" preload="auto">
-        <source src="adhan.mp3" type="audio/mpeg">
-    </audio>
-
-    <!-- واجهة تفعيل الصوت -->
-    <div id="audio-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-2xl">
-        <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 shadow-2xl max-w-sm mx-4">
-            <div class="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="bell-ring" class="text-amber-500 w-12 h-12 animate-bounce"></i>
-            </div>
-            <h2 class="text-2xl font-bold mb-4 text-amber-500">مرحباً بك</h2>
-            <p class="text-white/70 mb-8 leading-relaxed">اضغط لتفعيل الأذان التلقائي والتنبيهات الصوتية.</p>
-            <button onclick="enableAudioAndTest()" class="w-full py-5 bg-amber-500 hover:bg-amber-600 text-[#050B18] font-black rounded-2xl transition-all shadow-lg shadow-amber-500/30 text-xl">
-                تفعيل الأذان والبدء
-            </button>
-        </div>
-    </div>
-
-    <!-- زر إيقاف الأذان -->
-    <button id="stop-athan-btn" onclick="stopAthan()" class="flex items-center gap-3 px-8 py-5 bg-red-600 text-white rounded-full shadow-2xl animate-pulse hover:bg-red-700 transition-colors">
-        <i data-lucide="volume-x" class="w-6 h-6"></i>
-        <span class="font-bold">إيقاف صوت الأذان</span>
-    </button>
-
-    <header class="sticky top-0 p-6 flex justify-between items-center glass z-[150]">
+    <!-- Sticky Header -->
+    <header class="sticky top-0 p-6 flex justify-between items-center glass">
         <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg rotate-3">
-                <i data-lucide="moon" class="text-[#050B18] fill-current w-6 h-6"></i>
+            <div class="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-amber-400 to-amber-700 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 rotate-3 transition-transform">
+                <i data-lucide="moon" class="text-[#050B18] fill-current w-6 h-6 md:w-8 md:h-8"></i>
             </div>
             <div>
-                <h1 class="text-xl font-black bg-gradient-to-l from-amber-200 to-amber-500 bg-clip-text text-transparent">فانوس رمضان</h1>
-                <p id="system-status" class="text-[10px] text-green-500 uppercase font-bold tracking-widest">انتظار التفعيل</p>
+                <h1 class="text-xl md:text-2xl font-black bg-gradient-to-l from-amber-200 to-amber-500 bg-clip-text text-transparent">فانوس رمضان</h1>
+                <p class="text-[8px] md:text-[10px] text-amber-200/50 uppercase tracking-[0.2em]">تجربة رمضانية فاخرة</p>
             </div>
         </div>
-        <div class="text-right">
-            <div id="live-clock" class="text-2xl font-mono font-bold text-amber-400 tracking-tighter">00:00:00</div>
-            <div id="header-date" class="text-xs text-white/40">-- رمضان</div>
+        <div class="flex flex-col items-end">
+            <div id="live-clock" class="text-xl md:text-2xl font-mono font-bold text-amber-400 tracking-tighter">00:00:00</div>
+            <div class="flex items-center gap-2 text-[10px] md:text-xs text-white/40">
+                <i data-lucide="calendar" class="w-3 h-3"></i>
+                <span id="header-date">-- رمضان</span>
+            </div>
         </div>
     </header>
 
     <main class="relative z-10 max-w-6xl mx-auto p-4 md:p-8 space-y-8">
         
-        <!-- قسم العداد التنازلي -->
-        <section class="relative overflow-hidden rounded-[2.5rem] bg-[#0A1224] border border-white/5 shadow-2xl p-8 md:p-12">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
+        <!-- Live Countdown Section -->
+        <section class="relative overflow-hidden rounded-[2.5rem] bg-[#0A1224] border border-white/5 shadow-2xl">
+            <div class="absolute top-0 right-0 p-8 opacity-10">
+                <i data-lucide="star" class="text-amber-500 w-32 h-32"></i>
+            </div>
+            
+            <div class="relative z-10 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-12">
                 <div class="text-center md:text-right space-y-6">
-                    <div id="notification-banner" class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-medium animate-pulse">
-                        <i data-lucide="bell" class="w-4 h-4"></i>
-                        <span id="notification-text">تنبيه: اقترب موعد الأذان</span>
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm font-medium animate-pulse-custom">
+                        <span class="w-2 h-2 bg-amber-500 rounded-full"></span>
+                        مباشر: المتبقي لأذان <span id="prayer-name">--</span>
                     </div>
-                    
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
-                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-ping"></span>
-                        المتبقي لأذان <span id="prayer-name">--</span>
-                    </div>
-                    
-                    <h2 id="countdown-timer" class="text-6xl md:text-8xl font-black tracking-tight font-mono text-white">00:00:00</h2>
-                    <p class="text-white/40 text-lg">يرفع الأذان في تمام <span id="prayer-time" class="text-white font-mono">--:--</span></p>
+                    <h2 id="countdown-timer" class="text-5xl md:text-7xl font-black tracking-tight font-mono">
+                        00:00:00
+                    </h2>
+                    <p class="text-white/40 text-lg">سيتم رفع الأذان في تمام الساعة <span id="prayer-time" class="text-white font-mono">--:--</span></p>
                 </div>
 
-                <div class="flex gap-4">
-                    <div class="w-32 h-36 bg-white/5 rounded-3xl flex flex-col items-center justify-center border border-white/10">
-                        <i data-lucide="sun" class="w-8 h-8 text-amber-500 mb-2"></i>
-                        <span class="text-[10px] text-white/40 uppercase">الإفطار</span>
+                <div class="flex gap-4 scale-90 md:scale-100">
+                    <div class="w-32 h-40 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl flex flex-col items-center justify-center space-y-2">
+                        <span class="p-3 bg-amber-500/20 rounded-2xl text-amber-500"><i data-lucide="sun" class="w-7 h-7"></i></span>
+                        <span class="text-xs text-white/40">إفطار اليوم</span>
                         <span id="today-maghrib" class="text-xl font-bold">--:--</span>
                     </div>
-                    <div class="w-32 h-36 bg-white/5 rounded-3xl flex flex-col items-center justify-center border border-white/10">
-                        <i data-lucide="moon" class="w-8 h-8 text-blue-400 mb-2"></i>
-                        <span class="text-[10px] text-white/40 uppercase">الفجر</span>
+                    <div class="w-32 h-40 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl flex flex-col items-center justify-center space-y-2">
+                        <span class="p-3 bg-blue-500/20 rounded-2xl text-blue-400"><i data-lucide="moon" class="w-7 h-7"></i></span>
+                        <span class="text-xs text-white/40">فجر اليوم</span>
                         <span id="today-fajr" class="text-xl font-bold">--:--</span>
                     </div>
                 </div>
             </div>
-            <div class="absolute bottom-0 left-0 h-1 bg-amber-500/20 w-full">
-                <div id="progress-bar" class="h-full bg-amber-500 transition-all duration-1000" style="width: 0%"></div>
+            <div class="h-1.5 w-full bg-white/5">
+                <div id="progress-bar" class="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 transition-all duration-1000" style="width: 0%"></div>
             </div>
         </section>
 
-        <!-- أزرار التبويبات -->
-        <div class="flex justify-center p-1 bg-white/5 rounded-2xl max-w-sm mx-auto border border-white/10">
-            <button onclick="switchTab('imsakia')" id="btn-imsakia" class="flex-1 py-3 px-4 rounded-xl transition-all tab-active font-bold">الإمساكية</button>
-            <button onclick="switchTab('prayers')" id="btn-prayers" class="flex-1 py-3 px-4 rounded-xl transition-all text-white/40 font-bold">الأدعية</button>
+        <!-- Navigation Tabs: أزرار التنقل الجديدة -->
+        <div class="flex justify-center p-1 bg-white/5 rounded-2xl max-w-md mx-auto border border-white/10">
+            <button onclick="switchTab('imsakia')" id="btn-imsakia" class="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl transition-all duration-300 tab-active">
+                <i data-lucide="calendar" class="w-5 h-5"></i>
+                <span class="font-bold">الإمساكية</span>
+            </button>
+            <button onclick="switchTab('prayers')" id="btn-prayers" class="flex-1 flex items-center justify-center gap-2 py-3 px-6 rounded-xl transition-all duration-300 text-white/40 hover:text-white">
+                <i data-lucide="book-open" class="w-5 h-5"></i>
+                <span class="font-bold">الأدعية</span>
+            </button>
         </div>
 
-        <!-- الحاويات الرئيسية -->
-      <div id="container-imsakia" class="space-y-6">
+        <!-- Content Area -->
+        <div id="container-imsakia" class="space-y-6">
             <div class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 shadow-xl overflow-hidden">
                 <div class="p-8 border-b border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
                     <h3 class="text-2xl font-bold flex items-center gap-3">
@@ -297,49 +280,47 @@
                     { name: 'الفجر', time: todayData.fajr },
                     { name: 'المغرب (الإفطار)', time: todayData.maghrib }
                 ];
-
                 let next = null;
-                for (let p of prayerTimes) {
+                for (let p of prayers) {
                     const [h, m] = p.time.split(':').map(Number);
-                    const pDate = new Date(); pDate.setHours(h, m, 0);
-                    if (pDate > current) { next = { ...p, date: pDate }; break; }
+                    const pDate = new Date();
+                    pDate.setHours(h, m, 0);
+                    if (pDate > currentTime) { next = { ...p, date: pDate }; break; }
                 }
-
                 if (!next) {
-                    const nextDay = imsakiaData.find(d => d.day === today.day + 1) || imsakiaData[0];
+                    const nextDay = imsakiaData.find(d => d.day === todayData.day + 1) || imsakiaData[0];
                     const [h, m] = nextDay.fajr.split(':').map(Number);
                     const pDate = new Date(); pDate.setDate(pDate.getDate() + 1); pDate.setHours(h, m, 0);
-                    next = { name: 'الفجر', time: nextDay.fajr, date: pDate };
+                    next = { name: 'الفجر (غداً)', time: nextDay.fajr, date: pDate };
                 }
-
-                const diff = next.date - current;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-
+                const diff = next.date - currentTime;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
                 document.getElementById('prayer-name').innerText = next.name;
                 document.getElementById('prayer-time').innerText = next.time;
                 document.getElementById('countdown-timer').innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+const totalSeconds = 24 * 60 * 60;
+const passedSeconds =
+currentTime.getHours() * 3600 +
+currentTime.getMinutes() * 60 +
+currentTime.getSeconds();
 
-                if (hours === 0 && minutes === 5 && seconds === 0 && !hasAlertedFiveMin) {
-                    const banner = document.getElementById('notification-banner');
-                    document.getElementById('notification-text').innerText = `تنبيه: بقي 5 دقائق على أذان ${next.name}`;
-                    banner.classList.remove('hidden');
-                    hasAlertedFiveMin = true;
-                }
-
-                if (hours === 0 && minutes === 0 && seconds === 0) {
-                    playAthan();
-                    hasAlertedFiveMin = false;
-                }
-
-                document.getElementById('progress-bar').style.width = `${(60 - current.getSeconds()) * 1.66}%`;
-            }, 1000);
+const progress = (passedSeconds / totalSeconds) * 100;
+document.getElementById('progress-bar').style.width = `${progress}%`;            }, 1000);
 
             lucide.createIcons();
         }
+        <!-- ضع هذا قبل </body> مباشرة -->
+<audio id="adhan-audio" src="adhan.mp3" preload="auto"></audio>
 
-        window.onload = init;
+<div id="stop-adhan-container" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:9999;">
+    <button onclick="stopAdhan()" style="background:#f59e0b;color:black;padding:12px 25px;border-radius:20px;font-weight:bold;">
+        إيقاف الأذان
+    </button>
+</div>
+        }
+        window.onload = initApp;
     </script>
 </body>
 </html>
