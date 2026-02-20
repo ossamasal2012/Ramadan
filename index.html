@@ -113,16 +113,29 @@
         </div>
 
         <!-- الحاويات الرئيسية -->
-        <div id="wrapper-imsakia" class="">
-            <div id="container-imsakia" class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-xl">
+      <div id="container-imsakia" class="space-y-6">
+            <div class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 shadow-xl overflow-hidden">
+                <div class="p-8 border-b border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <h3 class="text-2xl font-bold flex items-center gap-3">
+                        <i data-lucide="table" class="text-amber-500"></i>
+                        إمساكية شهر رمضان المبارك
+                    </h3>
+                    <div class="bg-white/5 px-4 py-2 rounded-xl text-sm text-white/60 border border-white/10 flex items-center gap-2">
+                        <i data-lucide="map-pin" class="text-amber-500 w-4 h-4"></i>
+                        <span id="status-text">جاري التحميل...</span>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-right">
-                        <thead class="bg-white/[0.02] text-amber-500/50 text-xs uppercase">
-                            <tr>
-                                <th class="p-6 text-center">رمضان</th>
+                        <thead>
+                            <tr class="text-amber-500/60 text-xs uppercase tracking-widest bg-white/[0.02]">
+                                <th class="p-6 text-center">اليوم</th>
                                 <th class="p-6">التاريخ</th>
+                                <th class="p-6">الإمساك</th>
                                 <th class="p-6">الفجر</th>
-                                <th class="p-6">المغرب</th>
+                                <th class="p-6">الشروق</th>
+                                <th class="p-6">الظهر</th>
+                                <th class="p-6 text-amber-500 font-black">المغرب</th>
                             </tr>
                         </thead>
                         <tbody id="imsakia-body" class="divide-y divide-white/5"></tbody>
@@ -131,27 +144,67 @@
             </div>
         </div>
 
-        <div id="wrapper-prayers" class="section-hidden">
-            <div id="container-prayers" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <h4 class="text-amber-500 font-bold mb-4">عند الإفطار</h4>
-                    <p class="text-xl leading-relaxed">"ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله"</p>
+        <div id="container-prayers" class="space-y-6 hidden-section">
+            <h3 class="text-2xl font-bold flex items-center gap-3">
+                <i data-lucide="heart" class="text-amber-500"></i>
+                أدعية رمضانية مستجابة
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- مجموعة واسعة من الأدعية -->
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="sparkles" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="utensils" class="w-5 h-5"></i> دعاء الإفطار
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله."</p>
                 </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <h4 class="text-amber-500 font-bold mb-4">طلب العفو</h4>
-                    <p class="text-xl leading-relaxed">"اللهم إنك عفو كريم تحب العفو فاعفُ عني"</p>
+
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="cloud-moon" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="shield-check" class="w-5 h-5"></i> طلب العفو
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"اللهم إنك عفو كريم تحب العفو فاعفُ عني."</p>
                 </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <h4 class="text-amber-500 font-bold mb-4">بين التراويح</h4>
-                    <p class="text-xl leading-relaxed">"سبحان ذي الملك والملكوت، سبحان ذي العزة والعظمة والهيبة والقدرة والكبرياء والجبروت"</p>
+
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="sun" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="sun" class="w-5 h-5"></i> دعاء الصباح
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"اللهم إني أسألك خير هذا اليوم فتحه ونصره ونوره وبركته وهداه."</p>
                 </div>
-                <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                    <h4 class="text-amber-500 font-bold mb-4">دعاء السحر</h4>
-                    <p class="text-xl leading-relaxed">"يا حي يا قيوم برحمتك أستغيث، أصلح لي شأني كله ولا تكلني إلى نفسي طرفة عين"</p>
+
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="message-circle" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="stars" class="w-5 h-5"></i> دعاء ليلة القدر
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"اللهم اهدِني فيمَن هدَيت، وعافِني فيمَن عافيت، وتولَّني فيمَن تولَّيت."</p>
+                </div>
+
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="users" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="users" class="w-5 h-5"></i> دعاء للوالدين
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"ربِّ اغفر لي ولوالديّ وارحمهما كما ربياني صغيراً."</p>
+                </div>
+
+                <div class="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-amber-500/50 transition-all group relative overflow-hidden">
+                    <i data-lucide="moon" class="absolute -right-2 -top-2 w-16 h-16 text-amber-500/5 group-hover:text-amber-500/10 transition-colors"></i>
+                    <h4 class="font-bold text-amber-400 mb-4 flex items-center gap-2 text-lg">
+                        <i data-lucide="anchor" class="w-5 h-5"></i> الاستقامة
+                    </h4>
+                    <p class="text-lg leading-relaxed text-white/80">"يا مقلب القلوب ثبت قلبي على دينك."</p>
                 </div>
             </div>
         </div>
     </main>
+
+    <footer class="p-12 text-center opacity-40">
+        <p class="text-xs tracking-widest uppercase font-light">تقبل الله منا ومنكم صالح الأعمال • رمضان 1447هـ</p>
+    </footer>
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
@@ -188,103 +241,61 @@
             { day: 30, date: '20 آذار', mDate: '2026-03-20', imsak: '04:34', fajr: '04:44', shuruq: '06:07', dhuhr: '12:10', maghrib: '18:29' },
         ];
 
-        let isAthanPlaying = false;
-        let hasAlertedFiveMin = false;
+        function switchTab(tab) {
+            const imsakiaContainer = document.getElementById('container-imsakia');
+            const prayersContainer = document.getElementById('container-prayers');
+            const imsakiaBtn = document.getElementById('btn-imsakia');
+            const prayersBtn = document.getElementById('btn-prayers');
 
-        function showAlert(msg) {
-            const alertBox = document.getElementById('custom-alert');
-            document.getElementById('alert-msg').innerText = msg;
-            alertBox.style.display = 'flex';
-            setTimeout(() => alertBox.style.display = 'none', 5000);
-        }
-
-        async function enableAudioAndTest() {
-            const audio = document.getElementById('athan-audio');
-            try {
-                await audio.play();
-                audio.pause();
-                audio.currentTime = 0;
-                document.getElementById('audio-overlay').style.display = 'none';
-                document.getElementById('system-status').innerText = 'الأذان التلقائي مفعل ✅';
-                document.getElementById('system-status').className = 'text-[10px] text-amber-500 font-bold uppercase tracking-widest';
-            } catch (err) {
-                showAlert("خطأ: تأكد من وجود ملف adhan.mp3 في المجلد");
-            }
-        }
-
-        function playAthan() {
-            if (isAthanPlaying) return;
-            const audio = document.getElementById('athan-audio');
-            audio.play().then(() => {
-                isAthanPlaying = true;
-                document.getElementById('stop-athan-btn').style.display = 'flex';
-            }).catch(() => showAlert("فشل تشغيل ملف الأذان"));
-        }
-
-        function stopAthan() {
-            const audio = document.getElementById('athan-audio');
-            audio.pause();
-            audio.currentTime = 0;
-            isAthanPlaying = false;
-            document.getElementById('stop-athan-btn').style.display = 'none';
-        }
-
-        // منطق تبديل الأقسام الصارم
-        function switchTab(tabName) {
-            const imsakiaWrapper = document.getElementById('wrapper-imsakia');
-            const prayersWrapper = document.getElementById('wrapper-prayers');
-            const btnImsakia = document.getElementById('btn-imsakia');
-            const btnPrayers = document.getElementById('btn-prayers');
-
-            if (tabName === 'imsakia') {
-                // إظهار الإمساكية وإخفاء الأدعية
-                imsakiaWrapper.classList.remove('section-hidden');
-                prayersWrapper.classList.add('section-hidden');
-                
-                // تحديث الأزرار
-                btnImsakia.classList.add('tab-active');
-                btnImsakia.classList.remove('text-white/40');
-                btnPrayers.classList.remove('tab-active');
-                btnPrayers.classList.add('text-white/40');
+            if (tab === 'imsakia') {
+                imsakiaContainer.classList.remove('hidden-section');
+                prayersContainer.classList.add('hidden-section');
+                imsakiaBtn.classList.add('tab-active');
+                prayersBtn.classList.remove('tab-active');
+                prayersBtn.classList.add('text-white/40');
             } else {
-                // إظهار الأدعية وإخفاء الإمساكية
-                prayersWrapper.classList.remove('section-hidden');
-                imsakiaWrapper.classList.add('section-hidden');
-                
-                // تحديث الأزرار
-                btnPrayers.classList.add('tab-active');
-                btnPrayers.classList.remove('text-white/40');
-                btnImsakia.classList.remove('tab-active');
-                btnImsakia.classList.add('text-white/40');
+                imsakiaContainer.classList.add('hidden-section');
+                prayersContainer.classList.remove('hidden-section');
+                prayersBtn.classList.add('tab-active');
+                imsakiaBtn.classList.remove('tab-active');
+                imsakiaBtn.classList.add('text-white/40');
             }
+            window.scrollTo({ top: imsakiaBtn.offsetTop - 150, behavior: 'smooth' });
         }
 
-        function init() {
+        function initApp() {
             const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            let today = imsakiaData.find(d => d.mDate === dateStr) || imsakiaData[0];
+            const dateString = now.toISOString().split('T')[0];
+            let todayData = imsakiaData.find(d => d.mDate === dateString) || imsakiaData[1]; 
 
-            document.getElementById('header-date').innerText = `${today.date} • ${today.day} رمضان`;
-            document.getElementById('today-maghrib').innerText = today.maghrib;
-            document.getElementById('today-fajr').innerText = today.fajr;
+            document.getElementById('header-date').innerText = `${todayData.date} • ${todayData.day} رمضان`;
+            document.getElementById('today-maghrib').innerText = todayData.maghrib;
+            document.getElementById('today-fajr').innerText = todayData.fajr;
+            document.getElementById('status-text').innerText = `اليوم ${todayData.day} رمضان 🌙`;
 
             const tbody = document.getElementById('imsakia-body');
             tbody.innerHTML = imsakiaData.map(row => `
-                <tr class="${row.day === today.day ? 'bg-amber-500/10' : ''}">
-                    <td class="p-6 text-center font-bold">${row.day}</td>
-                    <td class="p-6">${row.date}</td>
-                    <td class="p-6 font-mono">${row.fajr}</td>
-                    <td class="p-6 font-mono text-amber-500 font-bold">${row.maghrib}</td>
+                <tr class="transition-colors group ${row.day === todayData.day ? 'bg-amber-500/10' : 'hover:bg-white/[0.03]'}">
+                    <td class="p-6 text-center font-bold">
+                        <span class="mx-auto w-10 h-10 rounded-xl flex items-center justify-center ${row.day === todayData.day ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/30' : 'bg-white/5 text-white/60'}">
+                            ${row.day}
+                        </span>
+                    </td>
+                    <td class="p-6 ${row.day === todayData.day ? 'text-white font-bold' : 'text-white/60'}">${row.date}</td>
+                    <td class="p-6 font-mono">${row.imsak}</td>
+                    <td class="p-6 font-mono font-bold ${row.day === todayData.day ? 'text-blue-400' : 'text-blue-400/70'}">${row.fajr}</td>
+                    <td class="p-6 font-mono text-white/20">${row.shuruq}</td>
+                    <td class="p-6 font-mono">${row.dhuhr}</td>
+                    <td class="p-6 font-mono font-black text-xl ${row.day === todayData.day ? 'text-amber-500' : 'text-amber-500/80'}">${row.maghrib}</td>
                 </tr>
             `).join('');
 
             setInterval(() => {
-                const current = new Date();
-                document.getElementById('live-clock').innerText = current.toLocaleTimeString('ar-EG', { hour12: false });
-                
-                const prayerTimes = [
-                    { name: 'الفجر', time: today.fajr },
-                    { name: 'المغرب', time: today.maghrib }
+                const currentTime = new Date();
+                document.getElementById('live-clock').innerText = currentTime.toLocaleTimeString('ar-EG', { hour12: false });
+                const prayers = [
+                    { name: 'الفجر', time: todayData.fajr },
+                    { name: 'المغرب (الإفطار)', time: todayData.maghrib }
                 ];
 
                 let next = null;
