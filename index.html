@@ -3,284 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فانوس رمضان 2026 - الأذان التلقائي</title>
+    <title>إمساكية رمضان 2026 والسبحة الذكية</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.css" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;700;900&display=swap');
-        body { font-family: 'Cairo', sans-serif; background-color: #050B18; color: white; scroll-behavior: smooth; }
-        .glass { background: rgba(10, 18, 36, 0.9); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.1); }
-        .tab-active { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border-color: rgba(245, 158, 11, 0.5); }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
+        body { font-family: 'Cairo', sans-serif; background-color: #050B18; color: white; }
+        .glass { background: rgba(10, 18, 36, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .tab-active { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
         .hidden-section { display: none; }
-        #stop-athan-btn { position: fixed; bottom: 2rem; left: 2rem; z-index: 1000; display: none; }
-        #custom-alert { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); z-index: 300; display: none; }
+        .tasbih-card { transition: all 0.3s ease; border: 1px solid rgba(255,255,255,0.05); }
+        .tasbih-card:active { transform: scale(0.98); background: rgba(245, 158, 11, 0.05); }
     </style>
 </head>
-<body class="overflow-x-hidden pb-12">
-
-    <div id="custom-alert" class="bg-red-500 text-white px-6 py-3 rounded-full shadow-2xl font-bold flex items-center gap-2">
-        <i data-lucide="alert-circle"></i>
-        <span id="alert-msg">ملف الأذان adhan.mp3 غير موجود!</span>
-    </div>
+<body class="pb-12">
 
     <audio id="athan-audio" preload="auto">
         <source src="adhan.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="audio-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95 backdrop-blur-2xl">
-        <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 shadow-2xl max-w-sm mx-4">
-            <div class="w-24 h-24 bg-amber-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                <i data-lucide="bell-ring" class="text-amber-500 w-12 h-12 animate-bounce"></i>
-            </div>
-            <h2 class="text-2xl font-bold mb-4 text-amber-500">رمضان مبارك 2026</h2>
-            <p class="text-white/70 mb-8 leading-relaxed">اضغط لتفعيل الأذان التلقائي وجدول مواعيد الصلاة لهذا العام.</p>
-            <button onclick="enableAudioAndTest()" class="w-full py-5 bg-amber-500 hover:bg-amber-600 text-[#050B18] font-black rounded-2xl transition-all shadow-lg shadow-amber-500/30 text-xl">
-                دخول وتفعيل الصوت
-            </button>
+    <div id="audio-overlay" class="fixed inset-0 z-[200] flex items-center justify-center bg-black/95">
+        <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 max-w-sm mx-4">
+            <i data-lucide="moon-star" class="text-amber-500 w-16 h-16 mx-auto mb-6"></i>
+            <h2 class="text-2xl font-bold mb-4 text-amber-500">إمساكية 2026</h2>
+            <p class="text-white/70 mb-8 text-sm">اضغط للتفعيل لضمان عمل الأذان والعداد والسبحة الذكية.</p>
+            <button onclick="enableAudioAndTest()" class="w-full py-4 bg-amber-500 text-[#050B18] font-black rounded-2xl text-lg">دخول وتفعيل</button>
         </div>
     </div>
 
-    <button id="stop-athan-btn" onclick="stopAthan()" class="flex items-center gap-3 px-8 py-5 bg-red-600 text-white rounded-full shadow-2xl animate-pulse hover:bg-red-700 transition-colors">
-        <i data-lucide="volume-x" class="w-6 h-6"></i>
-        <span class="font-bold">إيقاف صوت الأذان</span>
-    </button>
-
-    <header class="sticky top-0 p-6 flex justify-between items-center glass z-[150]">
-        <div class="flex items-center gap-4">
-            <div class="w-12 h-12 bg-amber-500 rounded-2xl flex items-center justify-center shadow-lg rotate-3">
-                <i data-lucide="moon" class="text-[#050B18] fill-current w-6 h-6"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-black bg-gradient-to-l from-amber-200 to-amber-500 bg-clip-text text-transparent">فانوس رمضان</h1>
-                <div class="flex items-center gap-2">
-                    <p id="system-status" class="text-[10px] text-green-500 uppercase font-bold tracking-widest">النظام جاهز</p>
-                    <button onclick="testAthanManual()" class="text-[10px] bg-amber-500/10 text-amber-500 px-2 py-0.5 rounded border border-amber-500/20 hover:bg-amber-500/20 transition-colors font-bold">
-                        تجربة الصوت 🔊
-                    </button>
-                </div>
-            </div>
+    <header class="sticky top-0 p-4 flex justify-between items-center glass z-[150]">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center"><i data-lucide="fingerprint" class="text-[#050B18]"></i></div>
+            <h1 class="text-lg font-bold text-amber-500">رمضان 1447هـ</h1>
         </div>
-        <div class="text-right">
-            <div id="live-clock" class="text-2xl font-mono font-bold text-amber-400 tracking-tighter">00:00:00</div>
-            <div id="header-date" class="text-xs text-white/40">-- رمضان</div>
+        <div class="flex items-center gap-4">
+            <button onclick="testAthanManual()" class="bg-amber-500/10 border border-amber-500/20 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2">
+                <i data-lucide="volume-2" class="w-4 h-4"></i> تجربة الأذان
+            </button>
+            <div id="live-clock" class="text-xl font-mono font-bold text-amber-400">00:00:00</div>
         </div>
     </header>
 
-    <main class="relative z-10 max-w-6xl mx-auto p-4 md:p-8 space-y-8">
-        <section class="relative overflow-hidden rounded-[2.5rem] bg-[#0A1224] border border-white/5 shadow-2xl p-8 md:p-12">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-12">
-                <div class="text-center md:text-right space-y-6">
-                    <div id="notification-banner" class="hidden inline-flex items-center gap-2 px-4 py-2 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-medium animate-pulse">
-                        <i data-lucide="bell" class="w-4 h-4"></i>
-                        <span id="notification-text">--</span>
-                    </div>
-                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-sm">
-                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-ping"></span>
-                        المتبقي لأذان <span id="prayer-name">--</span>
-                    </div>
-                    <h2 id="countdown-timer" class="text-6xl md:text-8xl font-black tracking-tight font-mono text-white">00:00:00</h2>
-                    <p class="text-white/40 text-lg">يرفع الأذان في تمام <span id="prayer-time" class="text-white font-mono">--:--</span></p>
-                </div>
-                <div class="flex gap-4">
-                    <div class="w-32 h-36 bg-white/5 rounded-3xl flex flex-col items-center justify-center border border-white/10">
-                        <i data-lucide="sun" class="w-8 h-8 text-amber-500 mb-2"></i>
-                        <span class="text-[10px] text-white/40 uppercase">الإفطار</span>
-                        <span id="today-maghrib" class="text-xl font-bold">--:--</span>
-                    </div>
-                    <div class="w-32 h-36 bg-white/5 rounded-3xl flex flex-col items-center justify-center border border-white/10">
-                        <i data-lucide="moon" class="w-8 h-8 text-blue-400 mb-2"></i>
-                        <span class="text-[10px] text-white/40 uppercase">الفجر</span>
-                        <span id="today-fajr" class="text-xl font-bold">--:--</span>
-                    </div>
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 h-1 bg-amber-500/20 w-full">
-                <div id="progress-bar" class="h-full bg-amber-500 transition-all duration-1000" style="width: 0%"></div>
-            </div>
+    <main class="max-w-5xl mx-auto p-4 space-y-6">
+        <section class="rounded-[2.5rem] bg-[#0A1224] border border-white/5 p-8 text-center shadow-2xl">
+            <div class="text-amber-400 text-sm font-bold mb-2">المتبقي لأذان <span id="prayer-name">--</span></div>
+            <h2 id="countdown-timer" class="text-5xl md:text-7xl font-black font-mono mb-2 tracking-tighter text-white">00:00:00</h2>
+            <div id="next-prayer-time" class="text-white/40 text-sm font-mono">--:--</div>
         </section>
 
-        <div class="flex justify-center p-1 bg-white/5 rounded-2xl max-w-sm mx-auto border border-white/10">
-            <button onclick="switchTab('imsakia')" id="btn-imsakia" class="flex-1 py-3 px-4 rounded-xl transition-all tab-active font-bold">الإمساكية</button>
-            <button onclick="switchTab('prayers')" id="btn-prayers" class="flex-1 py-3 px-4 rounded-xl transition-all text-white/40 font-bold">الأدعية</button>
+        <div class="flex p-1 bg-white/5 rounded-2xl border border-white/10">
+            <button onclick="switchTab('imsakia')" id="tab-imsakia" class="flex-1 py-3 rounded-xl tab-active font-bold transition-all">الجدول الكامل</button>
+            <button onclick="switchTab('subha')" id="tab-subha" class="flex-1 py-3 rounded-xl text-white/40 font-bold transition-all">السبحة الإلكترونية</button>
         </div>
 
-        <div id="container-imsakia" class="bg-[#0A1224] rounded-[2.5rem] border border-white/5 overflow-hidden shadow-xl">
+        <div id="content-imsakia" class="bg-[#0A1224] rounded-[2rem] border border-white/5 overflow-hidden">
             <div class="overflow-x-auto">
-                <table class="w-full text-right">
-                    <thead class="bg-white/[0.02] text-amber-500/50 text-xs uppercase">
+                <table class="w-full text-center text-[10px] md:text-sm">
+                    <thead class="bg-white/5 text-amber-500 font-bold">
                         <tr>
-                            <th class="p-6 text-center">رمضان</th>
-                            <th class="p-6">التاريخ</th>
-                            <th class="p-6">الفجر</th>
-                            <th class="p-6">المغرب</th>
+                            <th class="p-2 md:p-4">رمضان</th>
+                            <th class="p-2 md:p-4">التاريخ</th>
+                            <th class="p-2 md:p-4">الإمساك</th>
+                            <th class="p-2 md:p-4">الفجر</th>
+                            <th class="p-2 md:p-4">الشروق</th>
+                            <th class="p-2 md:p-4">الظهر</th>
+                            <th class="p-2 md:p-4">المغرب</th>
+                            <th class="p-2 md:p-4">الليل</th>
                         </tr>
                     </thead>
-                    <tbody id="imsakia-body" class="divide-y divide-white/5"></tbody>
+                    <tbody id="imsakia-body" class="divide-y divide-white/5 text-white/80"></tbody>
                 </table>
             </div>
         </div>
 
-        <div id="container-prayers" class="hidden-section grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                <h4 class="text-amber-500 font-bold mb-4">عند الإفطار</h4>
-                <p class="text-xl leading-relaxed">"ذهب الظمأ وابتلت العروق وثبت الأجر إن شاء الله"</p>
-            </div>
-            <div class="bg-white/5 p-8 rounded-3xl border border-white/10">
-                <h4 class="text-amber-500 font-bold mb-4">طلب العفو</h4>
-                <p class="text-xl leading-relaxed">"اللهم إنك عفو كريم تحب العفو فاعفُ عني"</p>
-            </div>
+        <div id="content-subha" class="hidden-section space-y-4">
+            <div id="subha-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <button onclick="resetAllTasbih()" class="w-full py-3 mt-4 text-white/40 text-sm hover:text-red-400 transition-colors flex items-center justify-center gap-2">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i> تصفير جميع العدادات
+            </button>
         </div>
     </main>
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        const imsakiaData = [
-            { day: 1, date: '19 شباط', mDate: '2026-02-19', fajr: '05:19', maghrib: '18:07' },
-            { day: 2, date: '20 شباط', mDate: '2026-02-20', fajr: '05:18', maghrib: '18:07' },
-            { day: 3, date: '21 شباط', mDate: '2026-02-21', fajr: '05:17', maghrib: '18:08' },
-            { day: 4, date: '22 شباط', mDate: '2026-02-22', fajr: '05:16', maghrib: '18:09' },
-            { day: 5, date: '23 شباط', mDate: '2026-02-23', fajr: '05:15', maghrib: '18:10' },
-            { day: 6, date: '24 شباط', mDate: '2026-02-24', fajr: '05:14', maghrib: '18:11' },
-            { day: 7, date: '25 شباط', mDate: '2026-02-25', fajr: '05:13', maghrib: '18:11' },
-            { day: 8, date: '26 شباط', mDate: '2026-02-26', fajr: '05:12', maghrib: '18:12' },
-            { day: 9, date: '27 شباط', mDate: '2026-02-27', fajr: '05:11', maghrib: '18:13' },
-            { day: 10, date: '28 شباط', mDate: '2026-02-28', fajr: '05:10', maghrib: '18:14' },
-            { day: 11, date: '1 آذار', mDate: '2026-03-01', fajr: '05:08', maghrib: '18:15' },
-            { day: 12, date: '2 آذار', mDate: '2026-03-02', fajr: '05:07', maghrib: '18:16' },
-            { day: 13, date: '3 آذار', mDate: '2026-03-03', fajr: '05:06', maghrib: '18:17' },
-            { day: 14, date: '4 آذار', mDate: '2026-03-04', fajr: '05:04', maghrib: '18:18' },
-            { day: 15, date: '5 آذار', mDate: '2026-03-05', fajr: '05:03', maghrib: '18:18' },
-            { day: 16, date: '6 آذار', mDate: '2026-03-06', fajr: '05:02', maghrib: '18:19' },
-            { day: 17, date: '7 آذار', mDate: '2026-03-07', fajr: '05:01', maghrib: '18:20' },
-            { day: 18, date: '8 آذار', mDate: '2026-03-08', fajr: '05:00', maghrib: '18:21' },
-            { day: 19, date: '9 آذار', mDate: '2026-03-09', fajr: '04:58', maghrib: '18:21' },
-            { day: 20, date: '10 آذار', mDate: '2026-03-10', fajr: '04:57', maghrib: '18:22' },
-            { day: 21, date: '11 آذار', mDate: '2026-03-11', fajr: '04:56', maghrib: '18:23' },
-            { day: 22, date: '12 آذار', mDate: '2026-03-12', fajr: '04:55', maghrib: '18:23' },
-            { day: 23, date: '13 آذار', mDate: '2026-03-13', fajr: '04:53', maghrib: '18:24' },
-            { day: 24, date: '14 آذار', mDate: '2026-03-14', fajr: '04:52', maghrib: '18:25' },
-            { day: 25, date: '15 آذار', mDate: '2026-03-15', fajr: '04:51', maghrib: '18:26' },
-            { day: 26, date: '16 آذار', mDate: '2026-03-16', fajr: '04:49', maghrib: '18:26' },
-            { day: 27, date: '17 آذار', mDate: '2026-03-17', fajr: '04:48', maghrib: '18:27' },
-            { day: 28, date: '18 آذار', mDate: '2026-03-18', fajr: '04:47', maghrib: '18:28' },
-            { day: 29, date: '19 آذار', mDate: '2026-03-19', fajr: '04:45', maghrib: '18:28' },
-            { day: 30, date: '20 آذار', mDate: '2026-03-20', fajr: '04:44', maghrib: '18:29' },
+        const azkar = [
+            "اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ",
+            "أستغفر الله",
+            "سبحان الله و الحمد الله و لا إله إلا الله و الله أكبر",
+            "سبحان الله وبحمده سبحان الله العظيم",
+            "سبحان الله",
+            "الحمد لله",
+            "الله اكبر"
         ];
 
-        let isAthanPlaying = false;
-        let hasAlertedFiveMin = false;
+        // بيانات الإمساكية كاملة ومضبوطة من ملفك 
+        const imsakiaData = [
+            { day: 1, date: '19 شباط', mDate: '2026-02-19', imsak: '5:09', fajr: '5:19', sunrise: '6:42', dhuhr: '12:17', maghrib: '6:07', midnight: '11:35' },
+            { day: 2, date: '20 شباط', mDate: '2026-02-20', imsak: '5:08', fajr: '5:18', sunrise: '6:41', dhuhr: '12:16', maghrib: '6:07', midnight: '11:35' },
+            { day: 3, date: '21 شباط', mDate: '2026-02-21', imsak: '5:07', fajr: '5:17', sunrise: '6:40', dhuhr: '12:16', maghrib: '6:08', midnight: '11:35' },
+            { day: 4, date: '22 شباط', mDate: '2026-02-22', imsak: '5:06', fajr: '5:16', sunrise: '6:39', dhuhr: '12:16', maghrib: '6:09', midnight: '11:35' },
+            { day: 5, date: '23 شباط', mDate: '2026-02-23', imsak: '5:05', fajr: '5:15', sunrise: '6:38', dhuhr: '12:16', maghrib: '6:10', midnight: '11:35' },
+            { day: 6, date: '24 شباط', mDate: '2026-02-24', imsak: '5:04', fajr: '5:14', sunrise: '6:37', dhuhr: '12:16', maghrib: '6:11', midnight: '11:35' },
+            { day: 7, date: '25 شباط', mDate: '2026-02-25', imsak: '5:03', fajr: '5:13', sunrise: '6:36', dhuhr: '12:16', maghrib: '6:11', midnight: '11:35' },
+            { day: 8, date: '26 شباط', mDate: '2026-02-26', imsak: '5:02', fajr: '5:12', sunrise: '6:35', dhuhr: '12:16', maghrib: '6:12', midnight: '11:35' },
+            { day: 9, date: '27 شباط', mDate: '2026-02-27', imsak: '5:01', fajr: '5:11', sunrise: '6:34', dhuhr: '12:15', maghrib: '6:13', midnight: '11:35' },
+            { day: 10, date: '28 شباط', mDate: '2026-02-28', imsak: '5:00', fajr: '5:10', sunrise: '6:32', dhuhr: '12:15', maghrib: '6:14', midnight: '11:35' },
+            { day: 11, date: '1 آذار', mDate: '2026-03-01', imsak: '4:58', fajr: '5:08', sunrise: '6:30', dhuhr: '12:15', maghrib: '6:15', midnight: '11:34' },
+            { day: 12, date: '2 آذار', mDate: '2026-03-02', imsak: '4:57', fajr: '5:07', sunrise: '6:29', dhuhr: '12:15', maghrib: '6:16', midnight: '11:34' },
+            { day: 13, date: '3 آذار', mDate: '2026-03-03', imsak: '4:56', fajr: '5:06', sunrise: '6:28', dhuhr: '12:15', maghrib: '6:17', midnight: '11:34' },
+            { day: 14, date: '4 آذار', mDate: '2026-03-04', imsak: '4:54', fajr: '5:04', sunrise: '6:27', dhuhr: '12:14', maghrib: '6:18', midnight: '11:34' },
+            { day: 15, date: '5 آذار', mDate: '2026-03-05', imsak: '4:53', fajr: '5:03', sunrise: '6:25', dhuhr: '12:14', maghrib: '6:18', midnight: '11:33' },
+            { day: 16, date: '6 آذار', mDate: '2026-03-06', imsak: '4:52', fajr: '5:02', sunrise: '6:24', dhuhr: '12:14', maghrib: '6:19', midnight: '11:33' },
+            { day: 17, date: '7 آذار', mDate: '2026-03-07', imsak: '4:51', fajr: '5:01', sunrise: '6:23', dhuhr: '12:14', maghrib: '6:20', midnight: '11:33' },
+            { day: 18, date: '8 آذار', mDate: '2026-03-08', imsak: '4:50', fajr: '5:00', sunrise: '6:22', dhuhr: '12:13', maghrib: '6:21', midnight: '11:33' },
+            { day: 19, date: '9 آذار', mDate: '2026-03-09', imsak: '4:48', fajr: '4:58', sunrise: '6:21', dhuhr: '12:13', maghrib: '6:21', midnight: '11:32' },
+            { day: 20, date: '10 آذار', mDate: '2026-03-10', imsak: '4:47', fajr: '4:57', sunrise: '6:19', dhuhr: '12:13', maghrib: '6:22', midnight: '11:32' },
+            { day: 21, date: '11 آذار', mDate: '2026-03-11', imsak: '4:46', fajr: '4:56', sunrise: '6:18', dhuhr: '12:13', maghrib: '6:23', midnight: '11:32' },
+            { day: 22, date: '12 آذار', mDate: '2026-03-12', imsak: '4:45', fajr: '4:55', sunrise: '6:17', dhuhr: '12:12', maghrib: '6:23', midnight: '11:32' },
+            { day: 23, date: '13 آذار', mDate: '2026-03-13', imsak: '4:43', fajr: '4:53', sunrise: '6:16', dhuhr: '12:12', maghrib: '6:24', midnight: '11:31' },
+            { day: 24, date: '14 آذار', mDate: '2026-03-14', imsak: '4:42', fajr: '4:52', sunrise: '6:14', dhuhr: '12:12', maghrib: '6:25', midnight: '11:31' },
+            { day: 25, date: '15 آذار', mDate: '2026-03-15', imsak: '4:41', fajr: '4:51', sunrise: '6:13', dhuhr: '12:12', maghrib: '6:26', midnight: '11:31' },
+            { day: 26, date: '16 آذار', mDate: '2026-03-16', imsak: '4:39', fajr: '4:49', sunrise: '6:12', dhuhr: '12:11', maghrib: '6:26', midnight: '11:30' },
+            { day: 27, date: '17 آذار', mDate: '2026-03-17', imsak: '4:38', fajr: '4:48', sunrise: '6:11', dhuhr: '12:11', maghrib: '6:27', midnight: '11:30' },
+            { day: 28, date: '18 آذار', mDate: '2026-03-18', imsak: '4:37', fajr: '4:47', sunrise: '6:09', dhuhr: '12:11', maghrib: '6:28', midnight: '11:30' },
+            { day: 29, date: '19 آذار', mDate: '2026-03-19', imsak: '4:35', fajr: '4:45', sunrise: '6:08', dhuhr: '12:10', maghrib: '6:28', midnight: '11:29' },
+            { day: 30, date: '20 آذار', mDate: '2026-03-20', imsak: '4:34', fajr: '4:44', sunrise: '6:07', dhuhr: '12:10', maghrib: '6:29', midnight: '11:29' }
+        ];
 
-        function showAlert(msg) {
-            const alertBox = document.getElementById('custom-alert');
-            document.getElementById('alert-msg').innerText = msg;
-            alertBox.style.display = 'flex';
-            setTimeout(() => alertBox.style.display = 'none', 5000);
+        function initSubha() {
+            const container = document.getElementById('subha-list');
+            container.innerHTML = azkar.map((zikr, index) => {
+                const count = localStorage.getItem(`zikr_${index}`) || 0;
+                return `
+                    <div onclick="incrementTasbih(${index})" class="tasbih-card bg-white/5 p-5 rounded-[2rem] flex justify-between items-center cursor-pointer hover:bg-white/10">
+                        <div class="flex-1 text-right"><p class="text-white/90 text-md font-bold">${zikr}</p></div>
+                        <div class="mr-4 text-center">
+                            <span id="count_${index}" class="text-2xl font-mono font-black text-amber-500">${count}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function incrementTasbih(index) {
+            let count = parseInt(localStorage.getItem(`zikr_${index}`) || 0) + 1;
+            localStorage.setItem(`zikr_${index}`, count);
+            document.getElementById(`count_${index}`).innerText = count;
+            if (window.navigator.vibrate) window.navigator.vibrate(40);
+        }
+
+        function resetAllTasbih() {
+            if(confirm("تصفير جميع العدادات؟")) {
+                azkar.forEach((_, i) => localStorage.setItem(`zikr_${i}`, 0));
+                initSubha();
+            }
+        }
+
+        function parseTime(timeStr, isPM) {
+            const [h, m] = timeStr.split(':').map(Number);
+            let d = new Date();
+            let hours = isPM && h < 12 ? h + 12 : (!isPM && h === 12 ? 0 : h);
+            d.setHours(hours, m, 0, 0);
+            return d;
+        }
+
+        function update() {
+            const now = new Date();
+            const dateStr = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, '0') + "-" + String(now.getDate()).padStart(2, '0');
+            const today = imsakiaData.find(d => d.mDate === dateStr) || imsakiaData[0];
+
+            document.getElementById('live-clock').innerText = now.toLocaleTimeString('ar-EG', { hour12: false });
+
+            const prayers = [
+                { name: 'الفجر', time: parseTime(today.fajr, false) },
+                { name: 'الظهر', time: parseTime(today.dhuhr, true) },
+                { name: 'المغرب', time: parseTime(today.maghrib, true) }
+            ];
+
+            let next = prayers.find(p => p.time > now);
+            if (!next) {
+                const tomorrow = imsakiaData.find(d => d.day === (today.day % 30) + 1) || imsakiaData[0];
+                let nextDay = parseTime(tomorrow.fajr, false);
+                nextDay.setDate(nextDay.getDate() + 1);
+                next = { name: 'الفجر', time: nextDay };
+            }
+
+            const diff = next.time - now;
+            const h = Math.floor(diff / 3600000);
+            const m = Math.floor((diff % 3600000) / 60000);
+            const s = Math.floor((diff % 60000) / 1000);
+
+            document.getElementById('prayer-name').innerText = next.name;
+            document.getElementById('countdown-timer').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            document.getElementById('next-prayer-time').innerText = "موعد الأذان: " + next.time.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
+
+            if (h === 0 && m === 0 && s === 0) document.getElementById('athan-audio').play();
+        }
+
+        function switchTab(tab) {
+            const isImsakia = tab === 'imsakia';
+            document.getElementById('content-imsakia').classList.toggle('hidden-section', !isImsakia);
+            document.getElementById('content-subha').classList.toggle('hidden-section', isImsakia);
+            document.getElementById('tab-imsakia').className = isImsakia ? 'flex-1 py-3 rounded-xl tab-active font-bold' : 'flex-1 py-3 rounded-xl text-white/40 font-bold';
+            document.getElementById('tab-subha').className = !isImsakia ? 'flex-1 py-3 rounded-xl tab-active font-bold' : 'flex-1 py-3 rounded-xl text-white/40 font-bold';
+            lucide.createIcons();
         }
 
         async function enableAudioAndTest() {
             const audio = document.getElementById('athan-audio');
-            try {
-                await audio.play(); audio.pause(); audio.currentTime = 0;
-                document.getElementById('audio-overlay').style.display = 'none';
-                document.getElementById('system-status').innerText = 'الأذان التلقائي مفعل ✅';
-            } catch (err) { showAlert("خطأ: تأكد من ملف adhan.mp3"); }
+            await audio.play(); audio.pause();
+            document.getElementById('audio-overlay').style.display = 'none';
         }
 
-        function testAthanManual() {
-            const audio = document.getElementById('athan-audio');
-            if (isAthanPlaying) { stopAthan(); } 
-            else {
-                audio.play().then(() => {
-                    isAthanPlaying = true;
-                    document.getElementById('stop-athan-btn').style.display = 'flex';
-                }).catch(() => showAlert("تعذر تشغيل adhan.mp3"));
-            }
-        }
-
-        function stopAthan() {
-            const audio = document.getElementById('athan-audio');
-            audio.pause(); audio.currentTime = 0;
-            isAthanPlaying = false;
-            document.getElementById('stop-athan-btn').style.display = 'none';
-        }
-
-        function switchTab(tab) {
-            document.getElementById('container-imsakia').classList.toggle('hidden-section', tab !== 'imsakia');
-            document.getElementById('container-prayers').classList.toggle('hidden-section', tab !== 'prayers');
-            document.getElementById('btn-imsakia').className = tab === 'imsakia' ? 'flex-1 py-3 px-4 rounded-xl transition-all tab-active font-bold' : 'flex-1 py-3 px-4 rounded-xl transition-all text-white/40 font-bold';
-            document.getElementById('btn-prayers').className = tab === 'prayers' ? 'flex-1 py-3 px-4 rounded-xl transition-all tab-active font-bold' : 'flex-1 py-3 px-4 rounded-xl transition-all text-white/40 font-bold';
-        }
-
-        function init() {
-            const now = new Date();
-            const dateStr = now.toISOString().split('T')[0];
-            let today = imsakiaData.find(d => d.mDate === dateStr) || imsakiaData[0];
-
-            document.getElementById('header-date').innerText = `${today.date} • ${today.day} رمضان`;
-            document.getElementById('today-maghrib').innerText = today.maghrib;
-            document.getElementById('today-fajr').innerText = today.fajr;
-
-            document.getElementById('imsakia-body').innerHTML = imsakiaData.map(row => `
-                <tr class="${row.mDate === dateStr ? 'bg-amber-500/10' : ''}">
-                    <td class="p-6 text-center font-bold">${row.day}</td>
-                    <td class="p-6">${row.date}</td>
-                    <td class="p-6 font-mono">${row.fajr}</td>
-                    <td class="p-6 font-mono text-amber-500 font-bold">${row.maghrib}</td>
+        window.onload = () => {
+            initSubha();
+            const tbody = document.getElementById('imsakia-body');
+            tbody.innerHTML = imsakiaData.map(row => `
+                <tr class="border-b border-white/5">
+                    <td class="p-2 md:p-4 font-bold text-amber-500">${row.day}</td>
+                    <td class="p-2 md:p-4">${row.date}</td>
+                    <td class="p-2 md:p-4 font-mono opacity-60">${row.imsak}</td>
+                    <td class="p-2 md:p-4 font-mono">${row.fajr}</td>
+                    <td class="p-2 md:p-4 font-mono opacity-60">${row.sunrise}</td>
+                    <td class="p-2 md:p-4 font-mono">${row.dhuhr}</td>
+                    <td class="p-2 md:p-4 font-mono font-bold text-amber-400">${row.maghrib}</td>
+                    <td class="p-2 md:p-4 font-mono opacity-60">${row.midnight}</td>
                 </tr>
             `).join('');
-
-            setInterval(() => {
-                const current = new Date();
-                document.getElementById('live-clock').innerText = current.toLocaleTimeString('ar-EG', { hour12: false });
-                
-                const prayerTimes = [
-                    { name: 'الفجر', time: today.fajr },
-                    { name: 'المغرب', time: today.maghrib }
-                ];
-
-                let next = null;
-                for (let p of prayerTimes) {
-                    const [h, m] = p.time.split(':').map(Number);
-                    const pDate = new Date(); pDate.setHours(h, m, 0);
-                    if (pDate > current) { next = { ...p, date: pDate }; break; }
-                }
-
-                if (!next) {
-                    const nextDay = imsakiaData.find(d => d.day === (today.day % 30) + 1) || imsakiaData[0];
-                    const [h, m] = nextDay.fajr.split(':').map(Number);
-                    const pDate = new Date(); pDate.setDate(pDate.getDate() + 1); pDate.setHours(h, m, 0);
-                    next = { name: 'الفجر', time: nextDay.fajr, date: pDate };
-                }
-
-                const diff = next.date - current;
-                const hours = Math.floor(diff / 3600000);
-                const minutes = Math.floor((diff % 3600000) / 60000);
-                const seconds = Math.floor((diff % 60000) / 1000);
-
-                document.getElementById('prayer-name').innerText = next.name;
-                document.getElementById('prayer-time').innerText = next.time;
-                document.getElementById('countdown-timer').innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-                if (hours === 0 && minutes === 5 && seconds === 0 && !hasAlertedFiveMin) {
-                    const banner = document.getElementById('notification-banner');
-                    document.getElementById('notification-text').innerText = `بقي 5 دقائق على أذان ${next.name}`;
-                    banner.classList.remove('hidden');
-                    hasAlertedFiveMin = true;
-                    setTimeout(() => banner.classList.add('hidden'), 10000);
-                }
-
-                if (hours === 0 && minutes === 0 && seconds === 0) {
-                    if(!isAthanPlaying) {
-                        document.getElementById('athan-audio').play();
-                        isAthanPlaying = true;
-                        document.getElementById('stop-athan-btn').style.display = 'flex';
-                    }
-                    hasAlertedFiveMin = false;
-                }
-            }, 1000);
+            setInterval(update, 1000);
             lucide.createIcons();
-        }
-        window.onload = init;
+        };
     </script>
 </body>
 </html>
