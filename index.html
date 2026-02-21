@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فانوس رمضان 2026</title>
+    <title>فانوس رمضان 2026 - الإصدار المطور</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.css" rel="stylesheet">
     <style>
@@ -15,7 +15,6 @@
         .tasbih-card { transition: all 0.2s ease; border: 1px solid rgba(255,255,255,0.05); cursor: pointer; }
         .tasbih-card:active { transform: scale(0.95); background: rgba(245, 158, 11, 0.1); }
 
-        /* تنسيق شريط القرآن */
         #quran-slider {
             -webkit-appearance: none;
             width: 100%; height: 5px; background: #1e293b; border-radius: 10px;
@@ -27,10 +26,9 @@
             background: white; box-shadow: 0 0 8px rgba(0,0,0,0.4); cursor: pointer;
         }
 
-        /* تمييز الصف الخاص باليوم الحالي */
         .today-row {
-            background-color: rgba(245, 158, 11, 0.2) !important; /* خلفية برتقالية شفافة */
-            border: 2px solid #f59e0b !important; /* إطار برتقالي */
+            background-color: rgba(245, 158, 11, 0.2) !important;
+            border: 2px solid #f59e0b !important;
             transition: all 0.5s ease;
         }
 
@@ -53,19 +51,24 @@
         <div class="text-center p-8 bg-[#0A1224] rounded-[2.5rem] border border-amber-500/30 max-w-sm mx-4">
             <i data-lucide="moon-star" class="text-amber-500 w-16 h-16 mx-auto mb-6"></i>
             <h2 class="text-2xl font-bold mb-4 text-amber-500">رمضان 2026</h2>
-            <p class="text-white/70 mb-8 text-sm">اضغط للتفعيل لضمان عمل الأذان التلقائي والعداد والقرآن.</p>
-            <button onclick="enableAudioAndStart()" class="w-full py-4 bg-amber-500 text-[#050B18] font-black rounded-2xl text-lg hover:bg-amber-400 transition-colors">تفعيل ودخول</button>
+            <p class="text-white/70 mb-8 text-sm">اضغط للتفعيل لضمان عمل الأذان التلقائي والإشعارات والقرآن.</p>
+            <button onclick="enableAudioAndNotifications()" class="w-full py-4 bg-amber-500 text-[#050B18] font-black rounded-2xl text-lg hover:bg-amber-400 transition-colors">تفعيل ودخول</button>
         </div>
     </div>
 
     <header class="sticky top-0 p-4 flex justify-between items-center glass z-[150]">
         <div class="flex items-center gap-3">
             <div class="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center"><i data-lucide="layout-grid" class="text-[#050B18]"></i></div>
-            <h1 class="text-lg font-bold text-amber-500">فانوس رمضان</h1>
+            <h1 class="text-lg font-bold text-amber-500">فانوس</h1>
         </div>
+        
         <div class="flex items-center gap-2">
-            <button id="stop-btn" onclick="stopAthan()" class="hidden bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold">إيقاف الأذان</button>
-            <button onclick="testAthan()" class="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-3 py-1.5 rounded-lg text-xs font-bold">تجربة الأذان</button>
+            <button onclick="toggleSilentMode()" id="silent-btn" class="bg-white/5 text-white/50 border border-white/10 px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all">
+                <i data-lucide="volume-2" id="silent-icon" class="w-4 h-4"></i>
+                <span id="silent-text" class="hidden md:inline">صوت الأذان: يعمل</span>
+            </button>
+
+            <button id="stop-btn" onclick="stopAthan()" class="hidden bg-red-500/20 text-red-400 border border-red-500/30 px-3 py-1.5 rounded-lg text-xs font-bold">إيقاف</button>
             <div id="live-clock" class="text-lg font-mono font-bold text-amber-400 ml-2">00:00:00</div>
         </div>
     </header>
@@ -167,15 +170,53 @@
         const audio = document.getElementById('athan-audio');
         const qp = document.getElementById('quran-player');
         const slider = document.getElementById('quran-slider');
+        
+        // متغيرات الوضع الصامت
+        let isSilentMode = localStorage.getItem('silentMode') === 'true';
 
         function stopAthan() { audio.pause(); audio.currentTime = 0; document.getElementById('stop-btn').classList.add('hidden'); }
-        function testAthan() { audio.play(); document.getElementById('stop-btn').classList.remove('hidden'); }
+        
+        // دالة التبديل للوضع الصامت
+        function toggleSilentMode() {
+            isSilentMode = !isSilentMode;
+            localStorage.setItem('silentMode', isSilentMode);
+            updateSilentUI();
+        }
 
-        async function enableAudioAndStart() {
+        function updateSilentUI() {
+            const btn = document.getElementById('silent-btn');
+            const icon = document.getElementById('silent-icon');
+            const text = document.getElementById('silent-text');
+
+            if (isSilentMode) {
+                btn.classList.add('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                btn.classList.remove('bg-white/5', 'text-white/50', 'border-white/10');
+                icon.setAttribute('data-lucide', 'volume-x');
+                text.innerText = "الوضع الصامت: مفعل";
+            } else {
+                btn.classList.remove('bg-red-500/10', 'text-red-400', 'border-red-500/20');
+                btn.classList.add('bg-white/5', 'text-white/50', 'border-white/10');
+                icon.setAttribute('data-lucide', 'volume-2');
+                text.innerText = "صوت الأذان: يعمل";
+            }
+            lucide.createIcons();
+        }
+
+        async function enableAudioAndNotifications() {
             try { await audio.play(); audio.pause(); audio.currentTime = 0; } catch(e){}
+            if ("Notification" in window) { await Notification.requestPermission(); }
             document.getElementById('audio-overlay').style.display = 'none';
             setInterval(updateCore, 1000);
             initApp();
+        }
+
+        function showNotification(title, body) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification(title, {
+                    body: body,
+                    icon: "https://cdn-icons-png.flaticon.com/512/2913/2913431.png",
+                });
+            }
         }
 
         function parseTime(t, isPM) {
@@ -200,9 +241,7 @@
             ];
 
             let next = prayers.find(p => p.t > now);
-            if (!next) { 
-                next = { ...prayers[0], t: new Date(prayers[0].t.getTime() + 86400000) }; 
-            }
+            if (!next) { next = { ...prayers[0], t: new Date(prayers[0].t.getTime() + 86400000) }; }
 
             const diff = next.t - now;
             const h = Math.floor(diff / 3600000);
@@ -213,14 +252,21 @@
             document.getElementById('countdown-timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             document.getElementById('next-prayer-time').innerText = "موعد الصلاة: " + next.t.toLocaleTimeString('ar-EG', {hour:'2-digit', minute:'2-digit'});
 
+            // لحظة الصلاة
             if (h === 0 && m === 0 && s === 0) { 
-                audio.play(); 
-                document.getElementById('stop-btn').classList.remove('hidden'); 
+                // إرسال الإشعار دائماً
+                showNotification("🕌 حان الآن موعد أذان " + next.name, "حي على الصلاة.. حي على الفلاح");
+                
+                // تشغيل الصوت فقط إذا لم يكن صامتاً
+                if (!isSilentMode) {
+                    audio.play(); 
+                    document.getElementById('stop-btn').classList.remove('hidden'); 
+                }
             }
         }
 
         function initApp() {
-            // كود تمييز اليوم الحالي في الجدول
+            updateSilentUI(); // تحديث واجهة زر الصامت
             const now = new Date();
             const todayDateKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 
@@ -278,10 +324,7 @@
             }
         };
 
-        slider.oninput = () => {
-            qp.currentTime = slider.value;
-            slider.style.backgroundSize = (slider.value / qp.duration) * 100 + '% 100%';
-        };
+        slider.oninput = () => { qp.currentTime = slider.value; };
 
         function toggleQuran() {
             const icon = document.getElementById('quran-icon');
